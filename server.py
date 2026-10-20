@@ -195,11 +195,14 @@ def main():
     # Create FastAPI app
     app = FastAPI()
     
-    # Mount static files
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    # Mount static files only when the directory exists
+    import os
+    if os.path.isdir("static"):
+        app.mount("/static", StaticFiles(directory="static"), name="static")
+    else:
+        logger.warning("Static directory not found; skipping static file mount.")
     
     # Setup templates
-    import os
     templates = Jinja2Templates(directory="templates")
     
     # Root endpoint to serve the HTML form
